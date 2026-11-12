@@ -8,35 +8,35 @@
 
 ```mermaid
 flowchart TD
-    subgraph CI_CD [GitHub Actions CI/CD]
-        GHA[GitHub Actions Runner]
-        WIP[Workload Identity プール / プロバイダ (OIDC)]
+    subgraph CI_CD ["GitHub Actions CI/CD"]
+        GHA["GitHub Actions Runner"]
+        WIP["Workload Identity プール / プロバイダ (OIDC)"]
         GHA -->|1. OIDC認証 / 短期トークン交換| WIP
     end
 
-    subgraph GCP_Cloud [Google Cloud (asia-northeast1: 東京リージョン)]
-        SA[デプロイ用 サービスアカウント]
+    subgraph GCP_Cloud ["Google Cloud (asia-northeast1: 東京リージョン)"]
+        SA["デプロイ用 サービスアカウント"]
         WIP -->|2. 権限借用 (Impersonation)| SA
         
-        subgraph Compute [コンテナ実行基盤]
-            Cloud_Run[Cloud Run v2 サービス]
-            HTTPS_URL[組み込み HTTPS URL (外部公開)]
+        subgraph Compute ["コンテナ実行基盤"]
+            Cloud_Run["Cloud Run v2 サービス"]
+            HTTPS_URL["組み込み HTTPS URL (外部公開)"]
             Cloud_Run --- HTTPS_URL
         end
 
-        subgraph Monitoring [統合監視基盤 (Cloud Operations)]
-            Logging[Cloud Logging (構造化ログ)]
-            Alert_Policy[Cloud Monitoring アラートポリシー (CPU >= 80%)]
-            Notification_Channel[通知チャネル (メール通知)]
+        subgraph Monitoring ["統合監視基盤 (Cloud Operations)"]
+            Logging["Cloud Logging (構造化ログ)"]
+            Alert_Policy["Cloud Monitoring アラートポリシー (CPU >= 80%)"]
+            Notification_Channel["通知チャネル (メール通知)"]
             
             Cloud_Run -.->|コンテナログ| Logging
             Cloud_Run -.->|CPU使用率メトリクス| Alert_Policy
             Alert_Policy -->|インシデント発報| Notification_Channel
         end
 
-        subgraph Storage [State管理]
-            GCS_Bucket[Cloud Storage (GCS) バケット]
-            GCS_Bucket -->|Terraform State & バージョニング| State_File[default.tfstate]
+        subgraph Storage ["State管理"]
+            GCS_Bucket["Cloud Storage (GCS) バケット"]
+            GCS_Bucket -->|Terraform State & バージョニング| State_File["default.tfstate"]
         end
     end
 
