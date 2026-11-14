@@ -11,12 +11,12 @@ flowchart TD
     subgraph CI_CD ["GitHub Actions CI/CD"]
         GHA["GitHub Actions Runner"]
         WIP["Workload Identity プール / プロバイダ (OIDC)"]
-        GHA -->|1. OIDC認証 / 短期トークン交換| WIP
+        GHA -->|"1. OIDC認証 / 短期トークン交換"| WIP
     end
 
     subgraph GCP_Cloud ["Google Cloud (asia-northeast1: 東京リージョン)"]
         SA["デプロイ用 サービスアカウント"]
-        WIP -->|2. 権限借用 (Impersonation)| SA
+        WIP -->|"2. 権限借用 (Impersonation)"| SA
         
         subgraph Compute ["コンテナ実行基盤"]
             Cloud_Run["Cloud Run v2 サービス"]
@@ -29,19 +29,19 @@ flowchart TD
             Alert_Policy["Cloud Monitoring アラートポリシー (CPU >= 80%)"]
             Notification_Channel["通知チャネル (メール通知)"]
             
-            Cloud_Run -.->|コンテナログ| Logging
-            Cloud_Run -.->|CPU使用率メトリクス| Alert_Policy
-            Alert_Policy -->|インシデント発報| Notification_Channel
+            Cloud_Run -.->|"コンテナログ"| Logging
+            Cloud_Run -.->|"CPU使用率メトリクス"| Alert_Policy
+            Alert_Policy -->|"インシデント発報"| Notification_Channel
         end
 
         subgraph Storage ["State管理"]
             GCS_Bucket["Cloud Storage (GCS) バケット"]
-            GCS_Bucket -->|Terraform State & バージョニング| State_File["default.tfstate"]
+            GCS_Bucket -->|"Terraform State & バージョニング"| State_File["default.tfstate"]
         end
     end
 
-    SA -->|3. Terraform Apply| Cloud_Run
-    SA -->|3. Terraform Apply| Alert_Policy
+    SA -->|"3. Terraform Apply"| Cloud_Run
+    SA -->|"3. Terraform Apply"| Alert_Policy
 ```
 
 ---
